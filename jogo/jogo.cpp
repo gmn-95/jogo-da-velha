@@ -11,19 +11,19 @@ char p1 = 'X', p2 = 'O', turn, escolhaPlayer;
 int i = 0, j = 0, escolha = 0;
 bool vencedor, fim = false;
 
-void XO();
-void Board();
-void jogada();
-void resultado();
-void Final();
-void jogo();
-void zerar();
+void XO();//escolhas dos players X ou O
+void Board();//tabuleiro do jogo da velha -> #
+void jogada();//jogadas dos players
+bool resultado();//resultado: verificar se houve um vencedor ou empate
+bool Final(bool result);//mostrar na tela se foi empate, ou se houve um vencedor
+void jogo();//reuni todas as sub-rotinas nesta
+bool zerar();//reseta o tabuleiro, e a variavel vencedor
 
 int main(){
     char r;
-
     reinicio:
-    vencedor = false;
+
+    zerar();
     jogo();
     cout << "\nAguarde...\n\n";
     system("sleep 2");
@@ -42,6 +42,7 @@ int main(){
     return 0;
 }
 
+//escolhas dos players X ou O
 void XO(){
 
     cout << "Digite X se desejar ser o X ou Digite O se quiser O --> ";
@@ -57,6 +58,7 @@ void XO(){
     }
 }
 
+//tabuleiro do jogo da velha -> #
 void Board(){
 
     cout << "\n" << board[0] << " | " << board[1] << " | "<< board[2] << "\n";
@@ -66,6 +68,7 @@ void Board(){
     cout << board[6] << " | " << board[7] << " | "<< board[8] << "\n\n";
 }
 
+//jogadas dos players
 void jogada(){
     movimento:
     if(turn == p1){
@@ -104,53 +107,64 @@ void jogada(){
     Board();
 }
 
-void resultado(){
-    vencedor = false;
+//resultado: verificar se houve um vencedor ou empate
+bool resultado(){
+    bool result = false;
 
         if ((board[0] == board[1] && board[1] == board[2] ) || (board[3] == board[4] && board[4] == board[5] ) ||
             (board[6] == board[7] && board[7] == board[8] ) || (board[0] == board[3] && board[3] == board[6] ) ||
             (board[1] == board[4] && board[4] == board[7] ) || (board[2] == board[5] && board[5] == board[8] ) ||
             (board[0] == board[4] && board[4] == board[8] ) || (board[2] == board[4] && board[4] == board[6] )){
 
-                vencedor = true;
+                result = true;
         }
+    return result;
 }
 
-void Final(){
-    if(turn == p2 && vencedor == true){
+//mostrar na tela se foi empate, ou se houve um vencedor
+bool Final(bool result){
+    if(turn == p2 && result == true){
         cout << "Jogador X venceu!\n";
     }
 
-    else if(turn == p1 && vencedor == true){
+    else if(turn == p1 && result == true){
         cout << "Jogador O venceu!\n";
     }
     else {
           cout << "Empate!\n\n";
         }
+    return true;
 }
 
+//reuni todas as sub-rotinas nesta
 void jogo(){
     system("clear");
     cout << "\n";
+    bool win = false;
+    resultado();
+
     XO();
     Board();
     int n = 0;
-    while(vencedor == false || n > 9){
+    while(win == false || n > 9){
         n++;
         jogada();
-        resultado();
+        win = resultado();
         if (n >= 9){
             break;
         }
     }
-    Final();
+    Final(win);
 }
 
-void zerar(){
+//reseta o tabuleiro, e a variavel vencedor
+bool zerar(){
 
     board[0] = '1'; board[1] = '2'; board[2] = '3';
     board[3] = '4'; board[4] = '5'; board[5] = '6';
     board[6] = '7'; board[7] = '8'; board[8] = '9';
 
     vencedor = false;
+
+    return vencedor;
 }
